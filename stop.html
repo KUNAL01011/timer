@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Stopwatch</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+        }
+
+        .stopwatch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .stopwatch span {
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #startBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #resetBtn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #resetBtn:disabled {
+            background-color: #ddd;
+            cursor: default;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (min-width: 768px) {
+            .stopwatch span {
+                font-size: 15rem;
+            }
+
+            #startBtn {
+                font-size: 2rem;
+                width: 15rem;
+            }
+
+            #resetBtn {
+                font-size: 2rem;
+                width: 15rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stopwatch">
+        <span id="display">00:00:00</span>
+        <div>
+            <button id="startBtn">Start</button>
+            <button id="resetBtn" disabled>Reset</button>
+        </div>
+    </div>
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let intervalId;
+        let running = false;
+
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        startBtn.addEventListener('click', () => {
+            if (!running) {
+                startTime = Date.now() - elapsedTime;
+                intervalId = setInterval(updateTime, 10);
+                running = true;
+                startBtn.textContent = "Stop";
+                resetBtn.disabled = true;
+            } else {
+                clearInterval(intervalId);
+                running = false;
+                startBtn.textContent = "Start";
+                resetBtn.disabled = false;
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(intervalId);
+            startTime = Date.now();
+            elapsedTime = 0;
+            display.textContent = '00:00:00';
+            running = false;
+            startBtn.textContent = "Start";
+            resetBtn.disabled = true;
+        });
+
+        function updateTime() {
+            elapsedTime = Date.now() - startTime;
+            const seconds = Math.floor((elapsedTime / 1000) % 60);
+            const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+            const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+
+            display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+
+</html>
